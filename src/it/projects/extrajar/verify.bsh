@@ -16,20 +16,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.maven.plugins.shade.resource;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
+import java.io.*;
+import java.util.jar.*;
 
-import org.apache.maven.plugins.shade.relocation.Relocator;
+String[] wanted =
+{
+    "org/slf4j/Logger.class",
+    "org/slf4j/impl/SimpleLogger.class"
+};
 
-/**
- * An abstract class to implement once the old non-reproducible ResourceTransformer API.
- */
-abstract class AbstractCompatibilityTransformer implements ReproducibleResourceTransformer {
-    @Override
-    public final void processResource(String resource, InputStream is, List<Relocator> relocators) throws IOException {
-        processResource(resource, is, relocators, 0);
+JarFile jarFile = new JarFile( new File( basedir, "target/test-1.0-shaded.jar" ) );
+
+for ( String path : wanted )
+{
+    if ( jarFile.getEntry( path ) == null )
+    {
+        throw new IllegalStateException( "wanted path is missing: " + path );
     }
 }
+
+jarFile.close();

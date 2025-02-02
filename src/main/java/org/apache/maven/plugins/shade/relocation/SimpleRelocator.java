@@ -182,6 +182,7 @@ public class SimpleRelocator implements Relocator {
         return false;
     }
 
+    @Override
     public boolean canRelocatePath(String path) {
         if (rawString) {
             return Pattern.compile(pathPattern).matcher(path).find();
@@ -200,10 +201,12 @@ public class SimpleRelocator implements Relocator {
         return isIncluded(path) && !isExcluded(path) && path.startsWith(pathPattern);
     }
 
+    @Override
     public boolean canRelocateClass(String clazz) {
         return !rawString && clazz.indexOf('/') < 0 && canRelocatePath(clazz.replace('.', '/'));
     }
 
+    @Override
     public String relocatePath(String path) {
         if (rawString) {
             return path.replaceAll(pathPattern, shadedPathPattern);
@@ -212,10 +215,12 @@ public class SimpleRelocator implements Relocator {
         }
     }
 
+    @Override
     public String relocateClass(String clazz) {
         return rawString ? clazz : clazz.replaceFirst(pattern, shadedPattern);
     }
 
+    @Override
     public String applyToSourceContent(String sourceContent) {
         if (rawString) {
             return sourceContent;

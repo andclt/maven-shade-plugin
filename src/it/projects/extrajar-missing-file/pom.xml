@@ -1,4 +1,5 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="UTF-8"?>
+
 <!--
 Licensed to the Apache Software Foundation (ASF) under one
 or more contributor license agreements.  See the NOTICE file
@@ -17,22 +18,32 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+<project>
   <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>org.apache.maven.its.shade.mr</groupId>
-    <artifactId>MSHADE-105-ROOT</artifactId>
-    <version>1.0-SNAPSHOT</version>
-  </parent>
-  <artifactId>MSHADE-105-SHADED-JAR</artifactId>
+
+  <groupId>org.apache.maven.its.shade.extrajar</groupId>
+  <artifactId>test</artifactId>
+  <version>1.0</version>
+  <packaging>jar</packaging>
+
+  <name>extrajar</name>
+  <description>
+    Test that asserts failure if specified extra jar is not a file.
+  </description>
+
+  <properties>
+    <slf4j.version>1.7.36</slf4j.version>
+  </properties>
+
   <dependencies>
     <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-      <version>2.14.0</version>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${slf4j.version}</version>
     </dependency>
   </dependencies>
+
   <build>
     <plugins>
       <plugin>
@@ -41,17 +52,16 @@ under the License.
         <version>@project.version@</version>
         <executions>
           <execution>
+            <id>attach-shade</id>
             <phase>package</phase>
             <goals>
               <goal>shade</goal>
             </goals>
             <configuration>
-              <relocations>
-                <relocation>
-                  <pattern>org.apache.commons.io</pattern>
-                  <shadedPattern>internal.io</shadedPattern>
-                </relocation>
-              </relocations>
+              <shadedArtifactAttached>true</shadedArtifactAttached>
+              <extraJars>
+                <extraJar>${project.build.directory}/no-such-file.jar</extraJar>
+              </extraJars>
             </configuration>
           </execution>
         </executions>
